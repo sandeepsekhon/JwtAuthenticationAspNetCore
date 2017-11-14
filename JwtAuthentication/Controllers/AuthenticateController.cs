@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using JwtAuthentication.Models;
 using Microsoft.AspNetCore.Mvc;
-using JwtAuthentication.Models;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
-using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,16 +16,20 @@ namespace JwtAuthentication.Controllers
     public class AuthenticateController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthenticateController> _logger;
 
-        public AuthenticateController(IConfiguration configuration)
+        public AuthenticateController(IConfiguration configuration, ILogger<AuthenticateController> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
         
         // POST api/values
         [HttpPost]
         public IActionResult Post([FromBody]TokenRequest request)
         {
+            _logger.LogInformation($"Request for token came for user {request?.UserName} at {DateTime.Now}");
+
             if(request.UserName=="admin@test.com" && request.Password=="Admin123!")
             {
                 var claims = new[]

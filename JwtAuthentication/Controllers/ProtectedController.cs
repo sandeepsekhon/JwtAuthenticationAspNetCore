@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,10 +12,18 @@ namespace JwtAuthentication.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProtectedController : Controller
     {
+        private readonly ILogger<ProtectedController> _logger;
+
+        public ProtectedController(ILogger<ProtectedController> logger)
+        {
+            _logger = logger;
+        }
+
         // GET: api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            _logger.LogInformation("Authenticated request came for this resource");
             return new string[] { "value1", "value2" };
         }
 
